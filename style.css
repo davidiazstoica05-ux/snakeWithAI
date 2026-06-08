@@ -22,8 +22,8 @@ body {
 
 .wrapper {
     border-radius: 10px;
-    width: 65vmin;
-    height: 70vmin;
+    width: 45vmin;
+    height: 50vmin;
     display: flex;
     flex-direction: column;
     overflow: hidden;
