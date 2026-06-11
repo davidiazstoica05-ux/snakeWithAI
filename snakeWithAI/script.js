@@ -70,6 +70,19 @@ function drawBoard(){
 
 };
 
+
+//Control
+
+addEventListener("keydown", function (event) {
+ if (event.key === 'Enter' && isGameOver ||
+        event.key === ' ' && isGameOver){
+        event.preventDefault();
+        resetVar();
+        gameInterval = setInterval(gameLoop,speedMilliS);
+    };
+});
+
+
 //Logic of the game 
 function moveSnake(){
 
@@ -123,7 +136,8 @@ function moveSnake(){
 };
 
 function gameLoop() {
-   
+
+    setAIDirection(food);
     moveSnake(); 
     gameOver();
     drawBoard(); 
@@ -134,38 +148,36 @@ function gameLoop() {
 As opposed to setTimeout() which only executes once*/
 gameInterval = setInterval(gameLoop, speedMilliS);
 
-function foodRandomGenerator(){
-
+function foodRandomGenerator() {
     const round = 20;
-        
-    let busyCoordinate; 
+    
     let newFood;
-
+    let busyCoordinate;
 
     do {
 
-    let randomNumberX = Math.random();
+        let randomNumberX = Math.random();
+        randomNumberX = randomNumberX * round;
+        randomNumberX = Math.floor(randomNumberX);
 
-    randomNumberX =  randomNumberX * round;
-
-    randomNumberX = Math.floor(randomNumberX);
-
-    let randomNumberY = Math.random();
-    randomNumberY =  randomNumberY * round;
-
-    randomNumberY = Math.floor(randomNumberY);
-    
-    newFood = { x: randomNumberX, y: randomNumberY };
-
-    busyCoordinate = snake.some(body => 
-                                body.x === newFood.x && body.y === food.y
-                                );
-
+        // Lanzamos los dados para la Y
+        let randomNumberY = Math.random();
+        randomNumberY = randomNumberY * round;
+        randomNumberY = Math.floor(randomNumberY);
         
-    } while (busyCoordinate);
+        newFood = { 
+            x: randomNumberX * boxSize, 
+            y: randomNumberY * boxSize 
+        };
 
+        busyCoordinate = snake.some(body => 
+            body.x === newFood.x && body.y === newFood.y
+        );
 
+    } while (busyCoordinate); 
 
+    food.x = newFood.x;
+    food.y = newFood.y;
 }
 
 function gameOver() {
@@ -245,7 +257,7 @@ function getValidNeighbors(currentBox){
 }
 
 //Calculate the shortest path to eat the apple 
-function calculatePath() {
+function calculatePath(target) {
   const start = snake[0];
 
   //QUEUE
@@ -261,8 +273,8 @@ function calculatePath() {
   while (boxesToExplore.length > 0) {
     let currentBox = boxesToExplore.shift();
 
-    if (currentBox.x === food.x && currentBox.y === food.y) {
-      return rebuildRoute(recordSteps, food);
+    if (currentBox.x === target.x && currentBox.y === target.y) {
+      return rebuildRoute(recordSteps, target);
     }
 
     let neighbors = getValidNeighbors(currentBox);
@@ -276,6 +288,7 @@ function calculatePath() {
         recordSteps.set(neighborKey, currentBox);
       }
     }
+
   }
 
   //If the loop has finished that means doesn't exist route to eat the apple 
@@ -283,10 +296,10 @@ function calculatePath() {
 }
 
 //rebuild the safe path from the end to the start. 
-function rebuildRoute(recordSteps, food) {
+function rebuildRoute(recordSteps, target) {
     
     let finalRoute = []; 
-    let currentBox = food; 
+    let currentBox = target; 
 
     while (currentBox !== null) {
         
@@ -304,3 +317,60 @@ function rebuildRoute(recordSteps, food) {
     return finalRoute;
 
 }
+
+function setAIDirection(target) {
+    
+    let route = calculatePath(target); 
+
+    if (route.length > 1) {
+        
+
+        let currentPosition = route[0]; 
+        let nextStep = route[1]; 
+
+
+        if (nextStep.x > currentPosition.x) {
+            
+
+            direction = "RIGHT"; 
+
+        } else if (nextStep.x < currentPosition.x) {
+            
+            direction = "LEFT"; 
+
+        } else if (nextStep.y > currentPosition.y) {
+            
+            direction = "DOWN";
+
+
+        } else if (nextStep.y < currentPosition.y) {
+            
+
+            direction = "UP";
+
+        }
+
+   } else if (target.x === food.x && target.y === food.y) {
+        
+        let snakeTail = snake[snake.length - 1];
+        setAIDirection(snakeTail);
+
+    } else {
+        
+        console.log("I've accepted my death");
+        
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
