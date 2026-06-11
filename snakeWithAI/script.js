@@ -137,20 +137,34 @@ gameInterval = setInterval(gameLoop, speedMilliS);
 function foodRandomGenerator(){
 
     const round = 20;
+        
+    let busyCoordinate; 
+    let newFood;
+
+
+    do {
 
     let randomNumberX = Math.random();
 
     randomNumberX =  randomNumberX * round;
 
     randomNumberX = Math.floor(randomNumberX);
-    
+
     let randomNumberY = Math.random();
     randomNumberY =  randomNumberY * round;
 
     randomNumberY = Math.floor(randomNumberY);
     
-    food.x = randomNumberX * boxSize;
-    food.y = randomNumberY * boxSize;
+    newFood = { x: randomNumberX, y: randomNumberY };
+
+    busyCoordinate = snake.some(body => 
+                                body.x === newFood.x && body.y === food.y
+                                );
+
+        
+    } while (busyCoordinate);
+
+
 
 }
 
