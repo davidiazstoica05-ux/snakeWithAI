@@ -1,32 +1,39 @@
-# Juego de Snake (Responsive)
+# Snake Game (Responsive)
 
-Un clon clásico del juego Snake desarrollado puramente con tecnologías web estándar (Vanilla JavaScript, HTML5 Canvas y CSS3). El juego cuenta con un motor gráfico matemático diseñado para adaptar automáticamente la cuadrícula y el tamaño de la partida a cualquier resolución de pantalla.
+A classic Snake game clone built purely with standard web technologies (Vanilla JavaScript, HTML5 Canvas, and CSS3). The game features a mathematical graphic engine designed to automatically adapt the grid and game size to any screen resolution.
 
-## Características
+## Features
 
-- **Canvas 100% Responsivo:** El tablero calcula dinámicamente el ancho y alto de la ventana (`window.innerWidth` / `innerHeight`) manteniendo siempre una matriz lógica de 20x20 casillas.
-- **Sistema de Puntuaciones:** Seguimiento de la puntuación actual y de la puntuación máxima (_High Score_) de la sesión.
-- **Prevención de colisiones ilógicas:** Controles filtrados para evitar que la serpiente gire 180 grados sobre sí misma de golpe.
-- **Interfaz HUD Clean:** Diseño oscuro minimalista de alto contraste inspirado en interfaces modernas.
+- **100% Responsive Canvas:** The board dynamically calculates the window's width and height (`window.innerWidth` / `innerHeight`), always maintaining a logical 20x20 grid.
+- **Scoring System:** Tracks the current score and the highest score (High Score) of the session.
+- **Illogical collision prevention:** Filtered controls to prevent the snake from turning 180 degrees on itself instantly.
+- **Clean HUD Interface:** Minimalist high-contrast dark design inspired by modern interfaces.
 
-## Tecnologías Utilizadas
+## Technologies Used
 
-- **HTML5** (Estructura y etiqueta `<canvas>`)
-- **CSS3** (Flexbox, variables de entorno y diseño responsivo)
-- **JavaScript (ES6+)** (Lógica de colisiones, bucle de juego con `setInterval` y manipulación del DOM)
+- **HTML5** (Structure and `<canvas>` tag)
+- **CSS3** (Flexbox, environment variables, and responsive design)
+- **JavaScript (ES6+)** (Collision logic, game loop with `setInterval`, and DOM manipulation)
 
-## Cómo Jugar
+## How to Play
 
-1. Clona este repositorio o descarga los archivos.
-2. Abre el archivo `index.html` en cualquier navegador web moderno.
-3. Utiliza las **Flechas del teclado** (Arriba, Abajo, Izquierda, Derecha) para mover la serpiente.
-4. Come las manzanas rojas para crecer y sumar puntos.
-5. Evita chocar contra los bordes de la pantalla o contra tu propio cuerpo.
-6. Si pierdes, pulsa **'Enter'** o la **'Barra espaciadora'** para reiniciar la partida.
+1. Clone this repository or download the files.
+2. Open the `index.html` file in any modern web browser.
+3. Use the **Arrow keys** (Up, Down, Left, Right) to move the snake.
+4. Eat the red apples to grow and earn points.
+5. Avoid crashing into the screen borders or your own body.
+6. If you lose, press **'Enter'** or the **'Spacebar'** to restart the game.
 
-## Próximas Mejoras (Roadmap)
+## Artificial Intelligence (Pathfinding & Survival)
 
-Este proyecto está en evolución. Las próximas características a implementar incluyen:
+This version features an autonomous AI engine capable of playing the game by evaluating the board in real-time. The decision-making architecture is divided into three core rules:
 
-- Que un modelo de IA juegue al snake.
-- Un modo de enfrentamiento donde un modelo de IA generativa sea la que mueve la serpiente y otro modelo de IA generativa sea la que coloca las frutas.
+- **Plan A (The Hunter):** The primary pathfinding relies on the **Breadth-First Search (BFS)** algorithm. As illustrated in resources like *Grokking Algorithms*, BFS systematically floods the grid level by level. This mathematical approach guarantees finding the absolute shortest path to the apple.
+- **Plan B (Survival Mode):** If the path to the apple is blocked by the snake's own body, the AI triggers a survival mechanism to chase its own tail. Instead of writing redundant pathfinding logic, this is handled through **recursion**. The engine simply calls itself with the tail as the new target, keeping the codebase clean, modular, and protected by a base case to prevent stack overflows.
+- **Plan C (Panic Mode):** In extreme scenarios where both the apple and the tail are unreachable, the AI resorts to the **Manhattan Distance** formula. By calculating the distance of all valid neighboring tiles to the food, the snake intentionally selects the move that takes it *furthest* away from the apple. This forces the snake to take the longest possible detour, effectively buying time until a safe path opens up.
+
+## Future Improvements (Roadmap)
+
+This project is constantly evolving. Upcoming features include:
+
+- A versus mode where one generative AI model controls the snake and another generative AI model places the fruits.
